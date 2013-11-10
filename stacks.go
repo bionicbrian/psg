@@ -13,30 +13,25 @@ type Stack struct {
     Passphrase string `json:"passphrase"`
 }
 
+func makePassphrase() string {
+    return "happy red hen"
+}
+
 func CreateStack (w http.ResponseWriter, r *http.Request) {
+    // For vars from the url string using gorilla:
+    // vars := mux.Vars(r)
+    // title := vars["title"]
+
     defer r.Body.Close()
 
-    // From the JSON request body:
     newStack := &Stack{}
 
     dec := json.NewDecoder(r.Body)
     dec.Decode(newStack)
-
-    newStack.Passphrase = "happy red hen"
-
-    log.Println(newStack.Title)
-    log.Println(newStack.Penalty)
-    log.Println(newStack.Passphrase)
-
-    // From the url string using gorilla:
-    vars := mux.Vars(r)
-    title := vars["title"]
-    penalty := vars["penalty"]
-
-    stack := &Stack{Title: title, Penalty: penalty}
+    newStack.Passphrase = makePassphrase()
 
     w.Header().Set("Content-Type", "application/json")
-    err := json.NewEncoder(w).Encode(stack)
+    err := json.NewEncoder(w).Encode(newStack)
 
     if err != nil {
         log.Fatal("couldn't decode res: ", err)
